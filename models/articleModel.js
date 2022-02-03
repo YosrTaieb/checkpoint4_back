@@ -11,7 +11,7 @@ import dbConnect from '../config/db-config.js';
 // READ ALL
 const getAll = () => {
     return new Promise((resolve, reject) => {
-        dbConnect.query('SELECT * FROM movie', (err, results) => {
+        dbConnect.query('SELECT * FROM article', (err, results) => {
             // si la requete n'est pas bonne on retourne une erreur
             if (err) reject(err);
             // sinon on retourne les résultats
@@ -23,7 +23,7 @@ const getAll = () => {
 // READ ONE
 const getOneById = (id) => {
     return new Promise((resolve, reject) => {
-        dbConnect.query('SELECT * FROM movie WHERE id = ?', id, (err, result) => {
+        dbConnect.query('SELECT * FROM article WHERE id = ?', id, (err, result) => {
             if (err) reject(err);
             else resolve(result[0]);
         })
@@ -33,7 +33,7 @@ const getOneById = (id) => {
 // DELETE
 const deleteById = (id) => {
     return new Promise((resolve, reject) => {
-        dbConnect.query('DELETE FROM movie WHERE id = ?', id, (err, result) => {
+        dbConnect.query('DELETE FROM article WHERE id = ?', id, (err, result) => {
             if (err) reject(err);
             else resolve(result.affectedRows);
         })
@@ -41,10 +41,11 @@ const deleteById = (id) => {
 }
 
 // CREATE
-const createNew = (movie) => {
-    const { title } = movie;
+const createNew = (article) => {
+    const { title, description, date, id_category } = article;
     return new Promise((resolve, reject) => {
-        dbConnect.query('INSERT INTO movie (title) VALUES (?)', title, (err, result) => {
+        dbConnect.query('INSERT INTO `article` (`title`, `description`, `date`, `id_category`) VALUES (?,?,?,?)', 
+    [title, description, date, id_category], (err, result) => {
             if (err) reject(err);
             else resolve(result.insertId);
         })
@@ -52,15 +53,20 @@ const createNew = (movie) => {
 }
 
 // UPDATE
-const updateMovie = (movie) => {
-    const { title, id } = movie;
+const updateArticle = (id, article) => {
     return new Promise((resolve, reject) => {
-        dbConnect.query('UPDATE movie SET title = ? WHERE id = ?', [title, id], (err, result) => {
+        dbConnect.query('UPDATE article SET ? WHERE id = ?', 
+        [article, id], (err, result) => {
             if (err) reject(err);
             else resolve(result);
         })
     })
 }
 
+// GET /entities/:id/entities2
+
+
+
+
 // exporter toutes les fonctions du model
-export default { getAll, getOneById, deleteById, createNew, updateMovie };
+export default { getAll, getOneById, deleteById, createNew, updateArticle };
